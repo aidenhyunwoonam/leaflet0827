@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Leaflet Campus Map — Optimized & Annotated</title>
+
+  <!-- 웹폰트 & Leaflet CSS -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Red+Hat+Text:ital,wght@0,400;0,600;0,700;1,400&family=Noto+Sans+KR:wght@400;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="anonymous" />
+
+  <style>
+    :root {
+      --header-height: 64px;
+      --bar-bg: #AD1D19;
+      --bar-fg: #fff;
+      --bar-shadow: 0 1px 8px rgba(0, 0, 0, .08);
+    }
+
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* (UI) 지도는 상단 고정바 아래 꽉 채우기 */
+    #map {
+      position: fixed;
+      top: var(--header-height);
+      left: 0;
+      right: 0;
+      bottom: 0;
+    }
+
+    /* (UI) 상단 바 */
+    .topbar {
+      position: fixed;
+      inset: 0 0 auto 0;
+      height: var(--header-height);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      background: var(--bar-bg);
+      color: var(--bar-fg);
+      box-shadow: var(--bar-shadow);
+      z-index: 1000;
+      user-select: none;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .brand-logo {
+      height: 64px;
+      object-fit: contain;
+    }
+
+    /* (아이콘) 포인트 마커용 간단 divIcon */
+    .parking-icon {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background-color: #3366cc;
+      color: #fff;
+      font-weight: 700;
+      font-size: 14px;
+      text-align: center;
+      line-height: 20px;
+    }
+
+    .gate-icon {
+      width: 28px;
+      height: 28px;
+      text-align: center;
+      line-height: 24px;
+      font-weight: 700;
+      color: #808080;
+      font-size: 28px;
+    }
+
+    .stairstatue-poi {
+      color: #AD1D19;
+    }
+
+    /* (라벨) 텍스트 라벨은 클릭 불가 + 흰 외곽선으로 가독성 보강 */
+    .label {
+      pointer-events: none;
+      font-size: 15px;
+      font-family: "Red Hat Text", "Noto Sans KR", system-ui, sans-serif;
+      color: #000;
+      white-space: nowrap;
+      text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
+    }
+
+    /* (팝업) 간단한 타이포 튜닝 */
+    .bldg-popup .popup-desc {
+      margin-top: 6px;
+      color: #333;
+      line-height: 1.45;
+    }
+
+    .bldg-popup .popup-links {
+      margin: 6px 0 0;
+      padding-left: 16px;
+    }
+
+    .bldg-popup .popup-links li {
+      margin: 2px 0;
+    }
+
+    .bldg-popup .popup-links a {
+      font-size: 12px;
+      color: #2a6;
+      text-decoration: underline;
+      word-break: break-all;
+    }
+
+    .bldg-popup .popup-imgs {
+      margin-top: 6px;
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+    }
+
+    .bldg-popup .popup-imgs img {
+      width: 200px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 8px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, .12);
+      flex: 0 0 auto;
+    }
+
+    @media (max-width:420px) {
+      .bldg-popup .popup-imgs img {
+        width: 120px;
+        height: 78px;
+      }
+    }
+
+    /* (UI) 언어 스위치 */
+    .lang-switch {
+      display: flex;
+      gap: 8px;
+    }
+
+    .lang-btn {
+      background: rgba(255, 255, 255, .9);
+      border: 0;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font: 600 14px/1 "Red Hat Text", "Noto Sans KR", system-ui, sans-serif;
+      cursor: pointer;
+    }
+
+    .lang-btn.active {
+      outline: 2px solid #fff;
+    }
+
+    /* (UI) 범례/네비게이터 */
+    .legend-control {
+      background: rgba(255, 255, 255, .5);
+      padding: 10px;
+      border-radius: 10px;
+      box-shadow: var(--bar-shadow);
+      max-width: 280px;
+      font-family: "Red Hat Text", "Noto Sans KR", system-ui, sans-serif;
+    }
+
+    .legend-control h3 {
+      margin: 0 0 6px;
+      font-weight: 900;
+      color: rgba(13, 50, 111);
+      font-size: 15px;
+    }
+
+    .legend-item {
+      display: block;
+      width: 100%;
+      text-align: left;
+      border: 0;
+      background: transparent;
+      padding: 6px 8px;
+      border-radius: 8px;
+      cursor: pointer;
+      font: 500 13px/1.2 "Red Hat Text", "Noto Sans KR", system-ui, sans-serif;
+    }
+
+    .legend-item:hover {
+      background: rgba(0, 0, 0, .06);
+    }
+
+    /* (핵심) 패턴 안정화: CSS가 프리젠테이션 속성(fill)보다 우선권 갖도록 !important */
+    #map .parking-fill {
+      fill: url(#parkingHatch) !important;
+    }
+
+    #map .forest-fill {
+      fill: url(#forestDots) !important;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="anonymous"></script>
+
+  <!-- 상단 바 -->
+  <header class="topbar" role="banner" aria-label="Campus header">
+    <div class="brand">
+      <img src="./data/kyungheelogo.jpg" alt="학교 로고" class="brand-logo" id="schoolLogo" />
+    </div>
+    <div class="lang-switch" role="group" aria-label="Language switch">
+      <button type="button" class="lang-btn" data-lang="ko">한국어</button>
+      <button type="button" class="lang-btn" data-lang="en">English</button>
+    </div>
+  </header>
+
+  <div id="map" aria-label="Campus map"></div>
+
+  <script>
+    // ===================== 공통 상수/유틸 =====================
+    const FETCH_OPTS = { cache: 'no-store' };
+
+    const map = L.map('map', {
+      center: [37.595719, 127.05373],
+      zoom: 16,
+      minZoom: 16,
+      maxZoom: 20
+    });
+    map.zoomControl.setPosition('topright');
+    window.addEventListener('load', () => map.invalidateSize());
+
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; OpenStreetMap contributors & CartoDB',
+      subdomains: 'abcd',
+      maxZoom: 20
+    }).addTo(map);
+
+    // 고정 z-순서를 위한 pane 구성
+    const PANES = Object.freeze({
+      base: { id: 'pane-base', z: 200 },       // campusarea/grass/forest/parking/pond
+      roads: { id: 'pane-roads', z: 400 },     // road/pedestrian
+      buildings: { id: 'pane-buildings', z: 500 }, // buildings/playground/stairstatue
+      points: { id: 'pane-points', z: 600 },   // parkinglot/gate
+      labels: { id: 'pane-labels', z: 650 }    // text labels
+    });
+    for (const v of Object.values(PANES)) {
+      map.createPane(v.id);
+      map.getPane(v.id).style.zIndex = v.z;
+    }
+
+    // renderer 분리
+    const svgBase = L.svg({ pane: PANES.base.id });
+    const svgRoads = L.svg({ pane: PANES.roads.id });
+    const svgBuildings = L.svg({ pane: PANES.buildings.id });
+    map.addLayer(svgBase);
+    map.addLayer(svgRoads);
+    map.addLayer(svgBuildings);
+
+    // renderer._container 보장
+    const ensureRendererContainer = (renderer) => {
+      if (!renderer._container) {
+        L.circleMarker(map.getCenter(), { renderer, radius: 0, opacity: 0, fillOpacity: 0 }).addTo(map).remove();
+      }
+    };
+    ensureRendererContainer(svgBase);
+    ensureRendererContainer(svgRoads);
+    ensureRendererContainer(svgBuildings);
+
+    // <defs> 패턴 준비
+    let defsReadyResolve;
+    const defsReady = new Promise(res => defsReadyResolve = res);
+    map.whenReady(() => {
+      const svg = svgBase._container;
+      const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+      defs.innerHTML = `
+        <pattern id="parkingHatch" patternUnits="userSpaceOnUse" width="6" height="6" patternTransform="rotate(30)">
+          <rect width="8" height="8" fill="#e2ddda"></rect>
+          <rect width="4" height="8" fill="#c9c1bc" opacity="0.7"></rect>
+        </pattern>
+        <pattern id="forestDots" patternUnits="userSpaceOnUse" width="6" height="6">
+          <rect width="8" height="8" fill="#bfcd96"></rect>
+          <circle cx="2" cy="2" r="1" fill="#aab884" opacity="0.7"></circle>
+          <circle cx="6" cy="6" r="1" fill="#aab884" opacity="0.7"></circle>
+        </pattern>`;
+      svg.prepend(defs);
+      defsReadyResolve && defsReadyResolve();
+    });
+
+    // 베이스 레이어 순서 보장
+    const baseLayers = { campus: null, grass: null, forest: null, parking: null, pond: null };
+    const restackBase = () => ['campus', 'grass', 'forest', 'parking', 'pond'].forEach(k => {
+      const g = baseLayers[k];
+      if (g && g.bringToFront) g.bringToFront();
+    });
+    map.whenReady(() => setTimeout(restackBase, 0));
+
+    // (백업) path에 직접 패턴 적용
+    const applyPattern = (layer, id) => {
+      const el = layer?.getElement?.();
+      if (el) el.setAttribute('fill', `url(#${id})`);
+    };
+
+    // ===================== 다국어 상태 =====================
+    let currentLang = (localStorage.getItem('lang') === 'en') ? 'en' : 'ko';
+    const updateLangButtons = () => {
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        const on = btn.dataset.lang === currentLang;
+        btn.classList.toggle('active', on);
+        btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
+    };
+    updateLangButtons();
+
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('.lang-btn');
+      if (!btn) return;
+      const lang = btn.dataset.lang;
+      if (lang !== 'ko' && lang !== 'en') return;
+      currentLang = lang;
+      localStorage.setItem('lang', lang);
+      updateLangButtons();
+
+      window._refreshBuildingLabels?.();
+      window._updateLegendText?.();
+
+      if (window._labelLayers) {
+        window._labelLayers.forEach(({ layer, feature }) => {
+          if (!layer._label) return;
+          const p = feature.properties || {};
+          const name = (currentLang === 'en')
+            ? (p.int_name || p.name || '')
+            : (p['simplified name'] || p.name || '');
+          const html = name ? `<div style="text-align:center;">${String(name).replace(/\(/g, (m, off) => off === 0 ? '(' : '<br>(')}</div>` : '';
+          setLabelText(layer._label, html);
+        });
+      }
+
+      // 열린 팝업의 본문 갱신
+      if (highlightedLayer) {
+        const { layer, layerGroup, descKey } = highlightedLayer;
+        const f = layer?.feature;
+        const key = descKey || layerGroup?._desc_key || null;
+        const popup = map._popup;
+        if (!popup || !f) return;
+        popup.setContent(buildNameHtml(f));
+        ensureDescLoaded(key).then(() => {
+          const entry = key ? getDescEntryFor(key, f) : null;
+          const desc = getEntryText(entry);
+          const extras = buildLinkAndImagesHtml(entry, f);
+          if (desc || extras) popup.setContent(buildNameHtml(f) + buildDescHtml(desc) + extras);
+        });
+      }
+    });
+
+    // ===================== 팝업/설명/라벨 유틸 =====================
+    let highlightedLayer = null; // { layer, layerGroup, descKey }
+
+    const DESC_SOURCES = Object.freeze({
+      building: './data/building_desc.json',
+      playground: './data/playground_desc.json',
+      stairstatue: './data/stairstatue_desc.json',
+      gate: './data/gate_desc.json',
+      parkinglot: './data/parkinglot_desc.json',
+    });
+    const LAYER_DESCS = {};
+    const DESC_READY = {};
+
+    // 공통 JSON fetch 유틸(재시도/타임아웃/캐시무효화)
+    async function fetchJSON(url, { retries = 2, timeout = 10000 } = {}) {
+      for (let i = 0; i <= retries; i++) {
+        try {
+          const ctrl = new AbortController();
+          const t = setTimeout(() => ctrl.abort(), timeout);
+          const r = await fetch(new URL(String(url), document.baseURI).href, { ...FETCH_OPTS, signal: ctrl.signal });
+          clearTimeout(t);
+          if (!r.ok) throw new Error('HTTP ' + r.status);
+          return await r.json();
+        } catch (err) {
+          if (i === retries) throw err;
+          await new Promise(res => setTimeout(res, 250 * (i + 1) + Math.random() * 250));
+        }
+      }
+    }
+    function ensureDescLoaded(key) {
+      if (!key || !DESC_SOURCES[key]) return Promise.resolve();
+      if (DESC_READY[key]) return DESC_READY[key];
+      DESC_READY[key] = fetchJSON(DESC_SOURCES[key])
+        .then(json => { LAYER_DESCS[key] = json || {}; })
+        .catch(err => { console.warn(`${key} desc load failed:`, err); LAYER_DESCS[key] = {}; });
+      return DESC_READY[key];
+    }
+    function getDescEntryFor(key, feature) {
+      const fid = feature?.properties?.fid;
+      if (fid == null) return null;
+      return (LAYER_DESCS[key] || {})[String(fid)] || null;
+    }
+
+    const buildNameHtml = (feature) => {
+      const p = feature?.properties ?? {};
+      const ko = p.name ?? '이름 없음';
+      const en = p.int_name ?? '';
+      const title = (currentLang === 'en') ? (en || ko || 'No name') : (ko || en || '이름 없음');
+      return `<b>${title}</b>`;
+    };
+    const getEntryText = (entry) => {
+      if (!entry) return '';
+      if (typeof entry === 'string') return entry;
+      return (currentLang === 'en') ? (entry.en || entry.ko || '') : (entry.ko || entry.en || '');
+    };
+    const formatText = (s) => String(s)
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\n/g, '<br>');
+    const buildDescHtml = (desc) => {
+      if (!desc) return '';
+      if (Array.isArray(desc)) return `<div class="popup-desc">${desc.map(p => `<p>${formatText(p)}</p>`).join('')}</div>`;
+      return `<div class="popup-desc">${formatText(desc)}</div>`;
+    };
+    const escapeHTML = (s) => String(s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+    const buildLinkAndImagesHtml = (entry, feature) => {
+      if (!entry || typeof entry === 'string') return '';
+      const parts = [];
+      const langIsKo = (currentLang === 'ko');
+
+      const linksCollected = [];
+      if (Array.isArray(entry.links)) {
+        entry.links.forEach(item => {
+          if (!item) return;
+          const url = item.url || item.href || '';
+          const label = item.label || (langIsKo ? item.label_ko : item.label_en)
+            || item.label_ko || item.label_en || (langIsKo ? '링크' : 'Link');
+          if (url) linksCollected.push({ label, url });
+        });
+      } else if (entry.links && typeof entry.links === 'object') {
+        for (const [label, url] of Object.entries(entry.links)) {
+          if (url) linksCollected.push({ label, url });
+        }
+      }
+      if (entry.link && linksCollected.length === 0) {
+        linksCollected.push({ label: langIsKo ? '공식 페이지' : 'Official site', url: entry.link });
+      }
+      if (linksCollected.length) {
+        const list = linksCollected.map(({ label, url }) =>
+          `<li><a href="${new URL(String(url), document.baseURI).href}" target="_blank" rel="noopener">${escapeHTML(label)}</a></li>`).join('');
+        parts.push(`<ul class="popup-links">${list}</ul>`);
+      }
+
+      const imgs = Array.isArray(entry.img) ? entry.img : (entry.img ? [entry.img] : []);
+      if (imgs.length) {
+        const name = feature?.properties?.name ?? '';
+        const gallery = imgs.map((src, i) =>
+          `<img src="${new URL(String(src), document.baseURI).href}" alt="${escapeHTML(name ? name + ' 이미지 ' : '')}${i + 1}" loading="lazy">`).join('');
+        parts.push(`<div class="popup-imgs">${gallery}</div>`);
+      }
+      return parts.join('');
+    };
+
+    // 스타일 보존/복원 + 하이라이트/팝업
+    const rememberStyle = (l) => {
+      if (!l._origStyle && l.options && typeof l.setStyle === 'function') l._origStyle = { ...l.options };
+    };
+    const restoreStyle = (group, l) => {
+      const hasGeoJsonStyle = !!(group && typeof group.resetStyle === 'function' && group.options?.style);
+      if (hasGeoJsonStyle) group.resetStyle(l);
+      else if (l._origStyle && typeof l.setStyle === 'function') l.setStyle(l._origStyle);
+    };
+    const clearHighlight = () => {
+      if (!highlightedLayer) return;
+      const { layerGroup, layer } = highlightedLayer;
+      try { restoreStyle(layerGroup, layer); } catch { }
+      highlightedLayer = null;
+      map.closePopup();
+    };
+    const applyHighlight = (layerGroup, layer, e, feature, descKey, popupOpts = {}) => {
+      try { L.DomEvent.stop(e); } catch { }
+      clearHighlight();
+      if (layer && typeof layer.setStyle === 'function') {
+        layer.setStyle({ color: '#ff6600', weight: 0, fillColor: '#ffa500', fillOpacity: 0.9 });
+        layer.bringToFront && layer.bringToFront();
+      }
+      const popup = L.popup({ maxWidth: 380, className: 'bldg-popup', ...popupOpts })
+        .setLatLng(e.latlng)
+        .setContent(buildNameHtml(feature))
+        .openOn(map);
+      const key = descKey || layerGroup?._desc_key;
+      ensureDescLoaded(key).then(() => {
+        const entry = key ? getDescEntryFor(key, feature) : null;
+        const desc = getEntryText(entry);
+        const extras = buildLinkAndImagesHtml(entry, feature);
+        if (desc || extras) popup.setContent(buildNameHtml(feature) + buildDescHtml(desc) + extras);
+      });
+      highlightedLayer = { layer, layerGroup, descKey: key };
+    };
+
+    map.on('click', clearHighlight);
+    map.getContainer().tabIndex = 0;
+    map.getContainer().addEventListener('keydown', (ev) => { if (ev.key === 'Escape') clearHighlight(); });
+
+    // 라벨 헬퍼
+    const createLabelForFeature = (feature, html = '', className = 'label') => {
+      const p = feature?.properties ?? {};
+      const lat = p.centeroid_ycoord, lng = p.centeroid_xcoord;
+      if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+      return L.marker([lat, lng], {
+        pane: PANES.labels.id,
+        icon: L.divIcon({ className, html, iconSize: null, iconAnchor: [30, 10] }),
+        interactive: false
+      });
+    };
+    const setLabelText = (labelMarker, html = '', className = 'label') => {
+      if (!labelMarker) return;
+      labelMarker.setIcon(L.divIcon({ className, html, iconSize: null, iconAnchor: [30, 10] }));
+    };
+
+    // 언어 전환 시 갱신 대상 라벨 목록
+    window._labelLayers = [];
+
+    // ===================== 레이어 로딩 =====================
+
+    // ---- Base 그룹: defsReady 이후 생성 (패턴/순서 레이스 방지) ----
+    defsReady.then(() => {
+      // 캠퍼스 영역
+      fetch('./data/campusarea.geojson', FETCH_OPTS)
+        .then(r => r.json())
+        .then(campusarea => {
+          const campus = L.geoJSON(campusarea, {
+            renderer: svgBase,
+            pane: PANES.base.id,
+            interactive: false,
+            style: (f) => ({
+              color: 'black',
+              weight: 0,
+              fillColor: f.properties.fid === 1 ? '#e7ebc7' : (f.properties.fid === 2 ? '#f3d3d4' : 'gray'),
+              fillOpacity: 1
+            })
+          }).addTo(map);
+          baseLayers.campus = campus; restackBase();
+        }).catch(console.error);
+
+      // 주차장 (패턴)
+      fetch('./data/parking.geojson', FETCH_OPTS)
+        .then(r => r.json())
+        .then(data => {
+          const parking = L.geoJSON(data, {
+            renderer: svgBase, pane: PANES.base.id, interactive: false,
+            className: 'parking-fill',
+            style: { color: '#a8a09a', weight: 0, fillOpacity: 1 },
+            onEachFeature: (_, layer) => {
+              const set = () => applyPattern(layer, 'parkingHatch');
+              layer.on('add', set); set();
+            }
+          }).addTo(map);
+          baseLayers.parking = parking; restackBase();
+        }).catch(console.error);
+
+      // 숲 (패턴)
+      fetch('./data/forest.geojson', FETCH_OPTS)
+        .then(r => r.json())
+        .then(data => {
+          const forest = L.geoJSON(data, {
+            renderer: svgBase, pane: PANES.base.id, interactive: false,
+            className: 'forest-fill',
+            style: { color: '#a8a09a', weight: 0, fillOpacity: 1 },
+            onEachFeature: (_, layer) => {
+              const set = () => applyPattern(layer, 'forestDots');
+              layer.on('add', set); set();
+            }
+          }).addTo(map);
+          baseLayers.forest = forest; restackBase();
+        }).catch(console.error);
+
+      // 잔디 (단색)
+      fetch('./data/grass.geojson', FETCH_OPTS)
+        .then(r => r.json())
+        .then(data => {
+          const grass = L.geoJSON(data, {
+            renderer: svgBase, pane: PANES.base.id, interactive: false,
+            style: { color: '#a8a09a', weight: 0, fillColor: '#cdd7a5', fillOpacity: 1 }
+          }).addTo(map);
+          baseLayers.grass = grass; restackBase();
+        }).catch(console.error);
+
+      // 연못 (단색)
+      fetch('./data/pond.geojson', FETCH_OPTS)
+        .then(r => r.json())
+        .then(data => {
+          const pond = L.geoJSON(data, {
+            renderer: svgBase, pane: PANES.base.id, interactive: false,
+            style: { color: '#a9bed1', weight: 2, fillColor: '#b8cee3', fillOpacity: 1 }
+          }).addTo(map);
+          baseLayers.pond = pond; restackBase();
+        }).catch(console.error);
+    });
+
+    // 건물 (인터랙티브 + Zoom/언어별 라벨 노출 규칙)
+    fetch('./data/building.geojson', FETCH_OPTS).then(r => r.json()).then(data => {
+      const EXPOSE_16_17 = new Set([2, 4, 58, 62]);
+      const EXCLUDE_18 = new Set([26, 47, 48, 49, 50, 52]);
+
+      const buildingLayer = L.geoJSON(data, {
+        renderer: svgBuildings,
+        pane: PANES.buildings.id,
+        style: { color: '#b6afa9', weight: 1, fillColor: '#c6beb8', fillOpacity: 1 },
+        onEachFeature: (feature, layer) => {
+          rememberStyle(layer);
+          layer.on('click', (e) => applyHighlight(buildingLayer, layer, e, feature, 'building'));
+          layer._label = createLabelForFeature(feature, '');
+        }
+      }).addTo(map);
+      buildingLayer._desc_key = 'building';
+
+      // 줌 단계별 라벨 정책
+      const handleZoom = () => {
+        const z = map.getZoom();
+        const isEn = (currentLang === 'en');
+
+        buildingLayer.eachLayer(l => {
+          const p = l.feature?.properties ?? {};
+          const fid = p.fid;
+          if (!l._label) return;
+
+          let show = false, text = '', name = '';
+
+          if (z === 16 || z === 17) {
+            if (EXPOSE_16_17.has(fid)) {
+              name = isEn ? (p.simplified_int_name || '') : (p['simplified name'] || p.name || '');
+              show = !!name; text = name ? `<div style="text-align:center;">${String(name)}</div>` : '';
+            }
+          } else if (z === 18) {
+            if (!EXCLUDE_18.has(fid)) {
+              name = isEn ? (p.simplified_int_name || '') : (p['simplified name'] || '');
+              if (name) {
+                const pretty = String(name).replace(/\(/g, (m, off) => off === 0 ? '(' : '<br>(');
+                text = `<div style="text-align:center;">${pretty}</div>`;
+                show = true;
+              }
+            }
+          } else if (z >= 19) {
+            name = isEn ? (p.simplified_int_name || '') : (p.name || p['simplified name'] || '');
+            if (name) {
+              const pretty = String(name).replace(/\(/g, (m, off) => off === 0 ? '(' : '<br>(');
+              text = `<div style="text-align:center;">${pretty}</div>`;
+              show = true;
+            }
+          }
+
+          if (show) {
+            setLabelText(l._label, text);
+            if (!map.hasLayer(l._label)) l._label.addTo(map);
+          } else {
+            if (map.hasLayer(l._label)) map.removeLayer(l._label);
+          }
+        });
+      };
+      window._refreshBuildingLabels = handleZoom;
+      map.on('zoomend', handleZoom);
+      handleZoom();
+
+      // 대표 건물 네비게이터 컨트롤
+      const FEATURED_BUILDINGS = Object.freeze([
+        { fid: 4 }, { fid: 2 }, { fid: 58 }, { fid: 62 },
+        { fid: 12 }, { fid: 1 }, { fid: 20 }, { fid: 9 },
+        { fid: 15 }, { fid: 5 }, { fid: 21 }, { fid: 17 },
+        { fid: 31 }, { fid: 43 }, { fid: 24 }, { fid: 18 },
+        { fid: 34 }, { fid: 46 }, { fid: 11 }, { fid: 14 },
+        { fid: 8 }, { fid: 19 }, { fid: 65 }, { fid: 42 },
+        { fid: 40 }
+      ]);
+
+      const buildingIndex = new Map();
+      buildingLayer.eachLayer(l => {
+        const fid = l?.feature?.properties?.fid;
+        if (fid != null) buildingIndex.set(fid, l);
+      });
+
+      const featureCenter = (layer) => {
+        const p = layer?.feature?.properties ?? {};
+        const lat = p.centeroid_ycoord, lng = p.centeroid_xcoord;
+        if (Number.isFinite(lat) && Number.isFinite(lng)) return L.latLng(lat, lng);
+        try { return layer.getBounds().getCenter(); } catch { return map.getCenter(); }
+      };
+
+      const buildingLabelFor = (fid) => {
+        const layer = buildingIndex.get(fid);
+        const f = layer?.feature;
+        const p = f?.properties || {};
+        const forced = FEATURED_BUILDINGS.find(x => x.fid === fid) || {};
+        if (currentLang === 'en') return forced.labelEn || p.int_name || p.name || `FID ${fid}`;
+        return forced.labelKo || p['simplified name'] || p.name || `FID ${fid}`;
+      };
+
+      const legendLinks = [];
+      const LegendControl = L.Control.extend({
+        options: { position: 'topleft' },
+        onAdd: function () {
+          const div = L.DomUtil.create('div', 'legend-control');
+          L.DomEvent.disableClickPropagation(div);
+          const title = document.createElement('h3');
+          title.textContent = (currentLang === 'en') ? 'Featured Buildings' : '대표 건물';
+          div.appendChild(title);
+
+          FEATURED_BUILDINGS.forEach(({ fid }) => {
+            const layer = buildingIndex.get(fid);
+            if (!layer) return;
+            const btn = document.createElement('button');
+            btn.className = 'legend-item';
+            btn.type = 'button';
+            btn.textContent = buildingLabelFor(fid);
+            btn.setAttribute('data-fid', String(fid));
+            btn.onclick = () => {
+              const b = layer.getBounds && layer.getBounds();
+              if (b && b.isValid && b.isValid()) {
+                map.flyToBounds(b, { maxZoom: 17, padding: [80, 80], animate: true });
+                map.once('moveend', () => {
+                  const center = b.getCenter();
+                  applyHighlight(buildingLayer, layer, { latlng: center }, layer.feature, 'building', { autoPan: false });
+                });
+              } else {
+                const center = featureCenter(layer);
+                map.setView(center, Math.max(map.getZoom(), 18), { animate: true });
+                applyHighlight(buildingLayer, layer, { latlng: center }, layer.feature, 'building', { autoPan: false });
+              }
+            };
+            div.appendChild(btn);
+            legendLinks.push(btn);
+          });
+          return div;
+        }
+      });
+      map.addControl(new LegendControl());
+      ensureDescLoaded('building');
+
+      window._updateLegendText = () => {
+        const titles = document.querySelectorAll('.legend-control h3');
+        titles.forEach(h => h.textContent = (currentLang === 'en') ? 'Navigator' : '위치 찾기');
+        legendLinks.forEach(btn => {
+          const fid = Number(btn.getAttribute('data-fid'));
+          btn.textContent = buildingLabelFor(fid);
+        });
+      };
+    }).catch(console.error);
+
+    // ===== stairstatue (fid 3: 폴리곤 인터랙티브+라벨, fid 6/9: 탑 심볼만; 심볼은 줌 18+에서 표시) =====
+    (() => {
+      // 마커 전용 pane 보장(겹침/가려짐 방지)
+      const POI_PANE_ID = (PANES && PANES.markers && PANES.markers.id) || 'poiPane';
+      if (!map.getPane(POI_PANE_ID)) {
+        map.createPane(POI_PANE_ID);
+        const pane = map.getPane(POI_PANE_ID);
+        pane.style.zIndex = '650';          // markerPane(600)보다 위
+        pane.style.pointerEvents = 'auto';  // 클릭 가능
+      }
+
+      fetch('./data/stairstatue.geojson', FETCH_OPTS)
+        .then(r => r.json())
+        .then(data => {
+          const stairstatuePOIs = L.layerGroup(); // fid 6/9 심볼(줌 18+에서만 on)
+
+          const stairstatue = L.geoJSON(data, {
+            renderer: svgBuildings,
+            pane: PANES.buildings.id,
+            style: { color: '#a8a09a', weight: 0, fillColor: '#ecebda', fillOpacity: 1 },
+
+            onEachFeature: (feature, layer) => {
+              const p = feature?.properties || {};
+              const fidNum = Number(p.fid);
+
+              // fid 3: 인터랙티브 + 라벨
+              if (fidNum === 3) {
+                rememberStyle(layer);
+                layer.on('click', (e) => applyHighlight(stairstatue, layer, e, feature, 'stairstatue'));
+                const nameForLabel = (currentLang === 'en') ? (p.simplified_int_name || '') : (p.name || '');
+                layer._label = createLabelForFeature(feature, nameForLabel);
+                if (layer._label) {
+                  layer._label.addTo(map);
+                  (window._labelLayers || (window._labelLayers = [])).push({ layer, feature });
+                }
+              }
+
+              // fid 6/9: 레이블 X, 탑 심볼만 (클릭 시 해당 폴리곤 하이라이트+팝업)
+              if (fidNum === 6 || fidNum === 9) {
+                rememberStyle(layer);
+
+                const xRaw = p.centeroid_xcoord ?? p.centroid_xcoord ?? p.cx ?? null;
+                const yRaw = p.centeroid_ycoord ?? p.centroid_ycoord ?? p.cy ?? null;
+                const x = Number(xRaw), y = Number(yRaw);
+                const latlng = (Number.isFinite(x) && Number.isFinite(y))
+                  ? L.latLng(y, x)
+                  : layer.getBounds().getCenter();
+
+                const poiIcon = L.divIcon({
+                  className: 'stairstatue-poi',
+                  html: `
+                    <svg width="32" height="32" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                      <path d="M12 3l4 8v9H8v-9z" fill="currentColor"/>
+                      <rect x="6" y="20" width="12" height="3" fill="currentColor"/>
+                    </svg>
+                  `,
+                  iconSize: [32, 32],
+                  iconAnchor: [16, 32]
+                });
+
+                const marker = L.marker(latlng, {
+                  icon: poiIcon,
+                  pane: POI_PANE_ID,
+                  keyboard: false,
+                  riseOnHover: true
+                });
+
+                marker.on('click', (e) => applyHighlight(stairstatue, layer, e, feature, 'stairstatue'));
+                stairstatuePOIs.addLayer(marker);
+              }
+            }
+          }).addTo(map);
+
+          stairstatue._desc_key = 'stairstatue';
+          ensureDescLoaded('stairstatue');
+
+          const updateStairstatuePOIsVisibility = () => {
+            const z = map.getZoom();
+            if (z >= 18) {
+              if (!map.hasLayer(stairstatuePOIs)) stairstatuePOIs.addTo(map);
+            } else {
+              if (map.hasLayer(stairstatuePOIs)) map.removeLayer(stairstatuePOIs);
+            }
+          };
+          updateStairstatuePOIsVisibility();
+          map.on('zoomend', updateStairstatuePOIsVisibility);
+        })
+        .catch(console.error);
+    })();
+
+    // 운동장 (일부만 인터랙티브: fid === 7)
+    fetch('./data/playground.geojson', FETCH_OPTS)
+      .then(r => r.json())
+      .then(data => {
+        const playground = L.geoJSON(data, {
+          renderer: svgBuildings, pane: PANES.buildings.id,
+          style: { color: '#a8a09a', weight: 0, fillColor: '#cbdfac', fillOpacity: 1 },
+          onEachFeature: (feature, layer) => {
+            if (feature.properties?.fid === 7) {
+              rememberStyle(layer);
+              layer.on('click', (e) => applyHighlight(playground, layer, e, feature, 'playground'));
+              const p = feature.properties || {};
+              const nameForLabel = (currentLang === 'en') ? (p.simplified_int_name || '') : (p.name || '');
+              layer._label = createLabelForFeature(feature, nameForLabel);
+              if (layer._label) { layer._label.addTo(map); window._labelLayers.push({ layer, feature }); }
+            }
+          }
+        }).addTo(map);
+        playground._desc_key = 'playground';
+        ensureDescLoaded('playground');
+      })
+      .catch(console.error);
+
+    // 도로/보행자 (비인터랙티브)
+    fetch('./data/road.geojson', FETCH_OPTS)
+      .then(r => r.json())
+      .then(data => {
+        L.geoJSON(data, {
+          renderer: svgRoads, pane: PANES.roads.id, interactive: false,
+          style: { color: '#ffffff', weight: 4, opacity: 1 }
+        }).addTo(map);
+      }).catch(console.error);
+
+    fetch('./data/pedestrian.geojson', FETCH_OPTS)
+      .then(r => r.json())
+      .then(data => {
+        L.geoJSON(data, {
+          renderer: svgRoads, pane: PANES.roads.id, interactive: false,
+          style: { color: '#ffffff', weight: 1, opacity: 1, dashArray: '5,5' }
+        }).addTo(map);
+      }).catch(console.error);
+
+    // 포인트(주차장/정문 등) — 줌 18 이상에서 표시
+    let parkinglotLayer, gateLayer;
+    const toggleByZoom = () => {
+      const show = map.getZoom() >= 18;
+      if (parkinglotLayer) {
+        if (show && !map.hasLayer(parkinglotLayer)) map.addLayer(parkinglotLayer);
+        else if (!show && map.hasLayer(parkinglotLayer)) map.removeLayer(parkinglotLayer);
+      }
+      if (gateLayer) {
+        if (show && !map.hasLayer(gateLayer)) map.addLayer(gateLayer);
+        else if (!show && map.hasLayer(gateLayer)) map.removeLayer(gateLayer);
+      }
+    };
+    map.on('zoomend', toggleByZoom);
+
+    // 주차장 포인트
+    fetch('./data/parkinglot.geojson', FETCH_OPTS)
+      .then(r => r.json())
+      .then(data => {
+        const parkingIcon = L.divIcon({
+          className: 'parking-icon',
+          html: 'P',
+          iconSize: [20, 20],
+          iconAnchor: [14, 1]
+        });
+        parkinglotLayer = L.geoJSON(data, {
+          pane: PANES.points.id,
+          pointToLayer: (_, latlng) => L.marker(latlng, { icon: parkingIcon, pane: PANES.points.id }),
+          onEachFeature: (feature, layer) => {
+            layer.on('click', e => applyHighlight(parkinglotLayer, layer, e, feature, 'parkinglot'));
+          }
+        });
+        parkinglotLayer._desc_key = 'parkinglot';
+        toggleByZoom();
+        ensureDescLoaded('parkinglot');
+      })
+      .catch(console.error);
+
+    // 정문 포인트
+    fetch('./data/gate.geojson', FETCH_OPTS)
+      .then(r => r.json())
+      .then(data => {
+        const gateIcon = L.divIcon({
+          className: 'gate-icon',
+          html: '&#x1F3DB;',
+          iconSize: [28, 28],
+          iconAnchor: [14, 14]
+        });
+        gateLayer = L.geoJSON(data, {
+          pane: PANES.points.id,
+          pointToLayer: (_, latlng) => L.marker(latlng, { icon: gateIcon, pane: PANES.points.id }),
+          onEachFeature: (feature, layer) => {
+            rememberStyle(layer);
+            layer.on('click', e => applyHighlight(gateLayer, layer, e, feature, 'gate'));
+          }
+        });
+        gateLayer._desc_key = 'gate';
+        toggleByZoom();
+        ensureDescLoaded('gate');
+      })
+      .catch(console.error);
+
+  </script>
+</body>
+
+</html>
