@@ -1,0 +1,16 @@
+{
+  "1": {
+    "ko": "주차시설 관련된 내용 적기",
+    "en": "",
+    "links": [
+      {
+        "label_ko": "주차시설안내",
+        "label_en": "Parking Information",
+        "url": "https://ccek.khu.ac.kr/sub05/sub05_4.html"
+      }
+    ],
+    "img": [
+      "./img/sample.png"
+    ]
+  }
+}

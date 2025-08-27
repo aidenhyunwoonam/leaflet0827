@@ -1,0 +1,528 @@
+{
+  "2": {
+    "ko": "경희대학교 평화의 전당은 개교 50주년을 기념하여 개관하였고, 스테인드글라스와 화강암으로 건축되었으며 중세 고딕양식 건축물의 진수를 보여줍니다. 평화의 전당은 단일 시설로는 아시아에서 손꼽히는 4,400석의 객석 수를 보유한 대형 문화 공간입니다.",
+    "en": "Kyung Hee University’s **Grand Peace Hall** opened to commemorate the university’s 50th anniversary. Built with stained glass and granite, it showcases the essence of medieval Gothic architecture. As a single venue, it is one of Asia’s largest cultural spaces, with 4,400 seats.",
+    "links": [
+      {
+        "label_ko": "평화의전당",
+        "label_en": "Grand Peace Hall",
+        "url": "https://khugpp.khu.ac.kr/khugpp/user/main/view.do"
+      }
+    ],
+    "img": [
+      "./img/sample.png"
+    ]
+  },
+  "4": {
+    "ko": "",
+    "en": "",
+    "links": [
+      {
+        "label_ko": "경희대학교",
+        "label_en": "Kyung Hee University",
+        "url": "https://www.khu.ac.kr/kor/user/main/view.do"
+      }
+    ]
+  },
+  "58": {
+    "ko": "",
+    "en": "",
+    "links": [
+      {
+        "label_ko": "중앙도서관",
+        "label_en": "Central Library",
+        "url": "https://lib.khu.ac.kr/"
+      }
+    ]
+  },
+  "46": {
+    "ko": "이과대학/간호과학대학",
+    "en": "College of Sciences/College of Nursing Science",
+    "links": [
+      {
+        "label_ko": "이과대학",
+        "label_en": "College of Science",
+        "url": "https://science.khu.ac.kr/science_kor/user/main/view.do"
+      },
+      {
+        "label_ko": "물리학과",
+        "label_en": "Department of Physics",
+        "url": "https://science.khu.ac.kr/phy/user/main/view.do"
+      },
+      {
+        "label_ko": "화학과",
+        "label_en": "Department of Chemistry",
+        "url": "https://science.khu.ac.kr/chem/user/main/view.do"
+      },
+      {
+        "label_ko": "생물학과",
+        "label_en": "Department of Biology",
+        "url": "https://science.khu.ac.kr/biology/user/main/view.do"
+      },
+      {
+        "label_ko": "지리학과",
+        "label_en": "Department of Geography",
+        "url": "https://science.khu.ac.kr/geo/user/main/view.do"
+      },
+      {
+        "label_ko": "정보디스플레이학과",
+        "label_en": "Department of Future Information Display",
+        "url": "https://science.khu.ac.kr/display/user/main/view.do"
+      },
+      {
+        "label_ko": "수학과",
+        "label_en": "Department of Mathematics",
+        "url": "https://maths.khu.ac.kr/maths/user/main/view.do"
+      },
+      {
+        "label_ko": "간호과학대학",
+        "label_en": "College of Nursing Science",
+        "url": "https://nursing.khu.ac.kr/nursing_kor/user/main/view.do"
+      }
+    ]
+  },
+  "42": {
+    "ko": "한의과대학",
+    "en": "College of Korean Medicine",
+    "links": [
+      {
+        "label_ko": "한의과대학",
+        "label_en": "College of Korean Medicine",
+        "url": "https://kmc.khu.ac.kr/kmc_kor/user/main/view.do"
+      }
+    ]
+  },
+  "5": {
+    "ko": "문과대학",
+    "en": "College of Humanities",
+    "links": [
+      {
+        "label_ko": "문과대학",
+        "label_en": "College of Humanities",
+        "url": "https://human.khu.ac.kr/human_kor/user/main/view.do"
+      },
+      {
+        "label_ko": "국어국문학과",
+        "label_en": "Department of Korean Language and Literature",
+        "url": "https://human.khu.ac.kr/gukmun/user/main/view.do"
+      },
+      {
+        "label_ko": "영어영문학과",
+        "label_en": "Department of English Language",
+        "url": "https://com.khu.ac.kr/khenglish/user/main/view.do"
+      },
+      {
+        "label_ko": "응용영어통번역학과",
+        "label_en": "Department of Applied English Linguistics and Translation Studies",
+        "url": "https://com.khu.ac.kr/aelts/user/main/view.do"
+      },
+      {
+        "label_ko": "사학과",
+        "label_en": "Department of History",
+        "url": "https://com.khu.ac.kr/history/user/main/view.do"
+      },
+      {
+        "label_ko": "철학과",
+        "label_en": "Department of Philosophy",
+        "url": "https://com.khu.ac.kr/sophia/user/main/view.do"
+      }
+    ]
+  },
+  "11": {
+    "ko": "정경대학",
+    "en": "College of Politics and Economics",
+    "links": [
+      {
+        "label_ko": "정경대학",
+        "label_en": "College of Politics and Economics",
+        "url": "https://khsma.khu.ac.kr/khsma/user/main/view.do"
+      },
+      {
+        "label_ko": "정치외교학과",
+        "label_en": "Department of Political Science and International Relations",
+        "url": "https://com.khu.ac.kr/politics/user/main/view.do"
+      },
+      {
+        "label_ko": "행정학과",
+        "label_en": "Department of Public Administration",
+        "url": "https://com.khu.ac.kr/pa/user/main/view.do"
+      },
+      {
+        "label_ko": "사회학과",
+        "label_en": "Department of Sociology",
+        "url": "https://com.khu.ac.kr/soc/user/main/view.do"
+      },
+      {
+        "label_ko": "미디어학과",
+        "label_en": "Department of Media",
+        "url": "https://com.khu.ac.kr/media/user/main/view.do"
+      },
+      {
+        "label_ko": "경제학과",
+        "label_en": "Department of Economics",
+        "url": "https://com.khu.ac.kr/econ/user/main/view.do"
+      },
+      {
+        "label_ko": "무역학과",
+        "label_en": "Department of International Business and Trade",
+        "url": "http://trade.khu.ac.kr/trade/index.php"
+      },
+      {
+        "label_ko": "국제통상·금융투자학부",
+        "label_en": "School of International Commerce, Finance, and Investment",
+        "url": "http://cominv.khu.ac.kr/home/index.php"
+      }
+    ]
+  },
+  "1": {
+    "ko": "경영대학",
+    "en": "College of Management",
+    "links": [
+      {
+        "label_ko": "경영대학",
+        "label_en": "College of Management",
+        "url": "https://kbiz.khu.ac.kr/biz_kor/user/main/view.do"
+      },
+      {
+        "label_ko": "경영학과",
+        "label_en": "Department of Business Administration",
+        "url": "https://com.khu.ac.kr/biz_kor/user/contents/view.do?menuNo=14500126"
+      },
+      {
+        "label_ko": "회계·세무학과",
+        "label_en": "Department of Accounting and Taxation",
+        "url": "https://com.khu.ac.kr/biz_kor/user/contents/view.do?menuNo=14500076"
+      },
+      {
+        "label_ko": "빅데이터응용학과",
+        "label_en": "Department of Big Data Analytics",
+        "url": "https://com.khu.ac.kr/biz_kor/user/contents/view.do?menuNo=14500077"
+      }
+    ]
+  },
+  "15": {
+    "ko": "무용학부",
+    "en": "School of Dance",
+    "links": [
+      {
+        "label_ko": "무용학부",
+        "label_en": "School of Dance",
+        "url": "https://dance.khu.ac.kr/dance/user/main/view.do"
+      }
+    ]
+  },
+  "18": {
+    "ko": "음악대학",
+    "en": "College of Music",
+    "links": [
+      {
+        "label_ko": "음악대학",
+        "label_en": "College of Music",
+        "url": "http://music.khu.ac.kr/"
+      },
+      {
+        "label_ko": "작곡과",
+        "label_en": "Department of Composition",
+        "url": "http://music.khu.ac.kr/contents/bbs/bbs_content.html?bbs_cls_cd=002001001"
+      },
+      {
+        "label_ko": "성악과",
+        "label_en": "Department of Vocal Music",
+        "url": "http://music.khu.ac.kr/contents/bbs/bbs_content.html?bbs_cls_cd=002002001"
+      },
+      {
+        "label_ko": "기악과",
+        "label_en": "Department of Instrumental Music",
+        "url": "http://music.khu.ac.kr/contents/bbs/bbs_content.html?bbs_cls_cd=002003001"
+      }
+    ]
+  },
+  "24": {
+    "ko": "약학대학",
+    "en": "College of Pharmacy",
+    "links": [
+      {
+        "label_ko": "약학대학",
+        "label_en": "College of Pharmacy",
+        "url": "https://pharm.khu.ac.kr/pharm_kor/user/main/view.do"
+      },
+      {
+        "label_ko": "약학과",
+        "label_en": "Department of Pharmacy",
+        "url": "https://pharm.khu.ac.kr/pharm_kor/user/contents/view.do?menuNo=3900025"
+      },
+      {
+        "label_ko": "한약학과",
+        "label_en": "Department of Korean Pharmacy",
+        "url": "https://pharm.khu.ac.kr/pharm_kor/user/contents/view.do?menuNo=3900029"
+      },
+      {
+        "label_ko": "약과학과",
+        "label_en": "Department of Pharmaceutical Science",
+        "url": "https://pharm.khu.ac.kr/pharm_kor/user/contents/view.do?menuNo=3900033"
+      }
+    ]
+  },
+  "34": {
+    "ko": "의과대학",
+    "en": "College of Medicine",
+    "links": [
+      {
+        "label_ko": "의과대학",
+        "label_en": "College of Medicine",
+        "url": "https://khusm.khu.ac.kr/"
+      }
+    ]
+  },
+  "19": {
+    "ko": "치과대학",
+    "en": "College of Dentistry",
+    "links": [
+      {
+        "label_ko": "의과대학",
+        "label_en": "College of Dentistry",
+        "url": "https://dental.khu.ac.kr/dental_kor/user/main/view.do"
+      }
+    ]
+  },
+  "40": {
+    "ko": "호텔관광대학",
+    "en": "College of Hotel and Tourism Management",
+    "links": [
+      {
+        "label_ko": "호텔관광대학",
+        "label_en": "College of Hotel and Tourism Management",
+        "url": "https://hot.khu.ac.kr/hot20_kor/user/main/view.do"
+      },
+      {
+        "label_ko": "Hospitality 경영학과",
+        "label_en": "Department of Hospitality Management",
+        "url": "https://hot.khu.ac.kr/hot20_kor/user/contents/view.do?menuNo=10900052"
+      },
+      {
+        "label_ko": "조리&푸드디자인학과",
+        "label_en": "Department of Culinary Arts&Food Design Management",
+        "url": "https://hot.khu.ac.kr/hot20_kor/user/contents/view.do?menuNo=10900168"
+      },
+      {
+        "label_ko": "관광·엔터테인먼트학부",
+        "label_en": "School of Tourism and Entertainment",
+        "url": "https://hot.khu.ac.kr/hot20_kor/user/contents/view.do?menuNo=10900067"
+      },
+      {
+        "label_ko": "글로벌 Hospitality·관광학과",
+        "label_en": "Department of Global Hospitality&Tourism Management",
+        "url": "https://hot.khu.ac.kr/hot20_kor/user/contents/view.do?menuNo=10900185"
+      },
+      {
+        "label_ko": "문화관광산업학과",
+        "label_en": "Department of Culture&Tourism Industry",
+        "url": "https://hot.khu.ac.kr/hot20_kor/user/contents/view.do?menuNo=10900076"
+      },
+      {
+        "label_ko": "조리산업학과",
+        "label_en": "Department of Culinary Arts Management",
+        "url": "https://hot.khu.ac.kr/hot20_kor/user/contents/view.do?menuNo=10900077"
+      }
+    ]
+  },
+  "17": {
+    "ko": "생활과학대학",
+    "en": "College of Human Ecology",
+    "links": [
+      {
+        "label_ko": "생활과학대학",
+        "label_en": "College of Human Ecology",
+        "url": "https://che.khu.ac.kr/che/user/main/view.do"
+      },
+      {
+        "label_ko": "아동가족학과",
+        "label_en": "Department of Child and Family Studies",
+        "url": "https://che.khu.ac.kr/che/user/contents/view.do?menuNo=12700011"
+      },
+      {
+        "label_ko": "주거환경학과",
+        "label_en": "Department of Housing and Interior Design",
+        "url": "https://che.khu.ac.kr/che/user/contents/view.do?menuNo=12700012"
+      },
+      {
+        "label_ko": "의상학과",
+        "label_en": "Department of Clothing and Textiles",
+        "url": "https://che.khu.ac.kr/che/user/contents/view.do?menuNo=12700013"
+      },
+      {
+        "label_ko": "식품영양학과",
+        "label_en": "Department of Food and Nutrition",
+        "url": "https://che.khu.ac.kr/che/user/contents/view.do?menuNo=12700014"
+      }
+    ]
+  },
+  "21": {
+    "ko": "미술대학",
+    "en": "College of Fine Arts",
+    "links": [
+      {
+        "label_ko": "미술대학",
+        "label_en": "College of Fine Arts",
+        "url": "https://khuart.khu.ac.kr/khuart/user/main/view.do"
+      },
+      {
+        "label_ko": "한국화",
+        "label_en": "Korean Painting",
+        "url": "https://khuart.khu.ac.kr/khuart/user/contents/view.do?menuNo=1400179"
+      },
+      {
+        "label_ko": "회화",
+        "label_en": "Painting",
+        "url": "https://khuart.khu.ac.kr/khuart/user/contents/view.do?menuNo=1400105"
+      },
+      {
+        "label_ko": "조소",
+        "label_en": "Sculpture",
+        "url": "https://khuart.khu.ac.kr/khuart/user/contents/view.do?menuNo=1400109"
+      }
+    ]
+  },
+  "7": {
+    "ko": "",
+    "en": "",
+    "links": [
+      {
+        "label_ko": "자연사박물관",
+        "label_en": "Natural History Museum",
+        "url": "https://nhm.khu.ac.kr/nhm_kor/user/main/view.do"
+      },
+      {
+        "label_ko": "자율전공학부",
+        "label_en": "School of Liberal Studies",
+        "url": "https://sls.khu.ac.kr/sls_kor/user/main/view.do"
+      }
+    ]
+  },
+  "14": {
+    "ko": "",
+    "en": "",
+    "links": [
+      {
+        "label_ko": "법학전문대학원",
+        "label_en": "School of Law",
+        "url": "https://law.khu.ac.kr/"
+      }
+    ]
+  },
+  "36": {
+    "ko": "",
+    "en": "",
+    "links": [
+      {
+        "label_ko": "삼의원창업센터",
+        "label_en": "Sameuiwon Startup Center",
+        "url": "https://campustown.khu.ac.kr/campustown/user/contents/view.do?menuNo=9900022"
+      }
+    ]
+  },
+  "30": {
+    "ko": "",
+    "en": "",
+    "links": [
+      {
+        "label_ko": "경희유치원",
+        "label_en": "Kyung Hee Kindergarten",
+        "url": "https://www.khu.kg.kr/"
+      }
+    ]
+  },
+  "31": {
+    "ko": "",
+    "en": "",
+    "links": [
+      {
+        "label_ko": "세화원",
+        "label_en": "SeWhaHall",
+        "url": "https://sewhahall.khu.ac.kr/"
+      }
+    ]
+  },
+  "43": {
+    "ko": "",
+    "en": "",
+    "links": [
+      {
+        "label_ko": "행복기숙사",
+        "label_en": "Happy Dormitory",
+        "url": "https://happydorm.khu.ac.kr/"
+      }
+    ]
+  },
+  "20": {
+    "ko": "",
+    "en": "",
+    "links": [
+      {
+        "label_ko": "국제교육원",
+        "label_en": "Institute of International Education",
+        "url": "https://iie.khu.ac.kr/"
+      }
+    ]
+  },
+  "62": {
+    "ko": "",
+    "en": "",
+    "links": [
+      {
+        "label_ko": "경희의료원",
+        "label_en": "Kyung Hee Medical Center",
+        "url": "https://www.khmc.or.kr/kr/main.do"
+      }
+    ]
+  },
+  "12": {
+    "ko": "",
+    "en": "",
+    "links": [
+      {
+        "label_ko": "치과병원",
+        "label_en": "Dental Hospital",
+        "url": "https://dent.khmc.or.kr/kr/main.do"
+      }
+    ]
+  },
+  "25": {
+    "ko": "",
+    "en": "",
+    "links": [
+      {
+        "label_ko": "신문방송국",
+        "label_en": "Media Center",
+        "url": "https://media.khu.ac.kr/"
+      }
+    ]
+  },
+  "8": {
+    "ko": "",
+    "en": "",
+    "links": [
+      {
+        "label_ko": "학생식당",
+        "label_en": "Student Cafeteria ",
+        "url": "https://coop.khu.ac.kr/food-menu/%ec%b2%ad%ec%9a%b4%ea%b4%80-%ec%8b%9d%eb%8b%b9-%ec%a3%bc%ea%b0%84%eb%a9%94%eb%89%b4/"
+      },
+      {
+        "label_ko": "후마니타스칼리지(교양대학)",
+        "label_en": "Humanitas College",
+        "url": "https://hc.khu.ac.kr/hc_kor/user/main/view.do"
+      }
+    ]
+  },
+  "9": {
+    "ko": "",
+    "en": "",
+    "links": [
+      {
+        "label_ko": "경희사이버대학교",
+        "label_en": "Kyung Hee Cyber University",
+        "url": "https://www.khcu.ac.kr/main/index.do"
+      }
+    ]
+  }
+}
